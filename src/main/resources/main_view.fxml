@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import com.drice.scrapingjunk.model.ScrapeInfo?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextArea?>
+<GridPane fx:controller="com.drice.scrapingjunk.view.MainViewController"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+
+    <Text text="Welcome"
+              GridPane.columnIndex="0" GridPane.rowIndex="0"
+              GridPane.columnSpan="2"/>
+    <Label text="User Name:"
+           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+    <TextField fx:id="user_name"
+               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+    <Label text="Password:"
+           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+    <PasswordField fx:id="passwordField"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <ComboBox fx:id="comboBox">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <ScrapeInfo
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="EntityID to Phone Number"
+                            targetUrlPrefix="https://csrtools.servicemagic.com/crm/modification/modification.crm?pageMode=Modifications&amp;entityID="
+                            targetUrlSuffix="&amp;modMode=review&amp;load=true"
+                            webElementSelector="tr.alternate-row1 td:nth-child(3)"/>
+                    <ScrapeInfo
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="Custom"
+                            targetUrlPrefix=""
+                            targetUrlSuffix=""
+                            webElementSelector=""/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="Scrape from CSV"
+                onAction="#handleScrapeCSVButtonAction"/>
+    </HBox>
+
+    <VBox spacing="5" maxWidth="700" GridPane.columnIndex="0" GridPane.rowIndex="10" GridPane.columnSpan="8">
+        <HBox fx:id="currentUrlTextDisplays" spacing="5">
+            <Label fx:id="urlTextLabelDisplay" text="URL: "/>
+            <TextField fx:id="urlTextFieldDisplay" editable="false"/>
+        </HBox>
+        <HBox fx:id="progressDisplays" spacing="5">
+            <Label fx:id="progressLabel" text="Clients Scraped: "/>
+            <TextField fx:id="progressTextField" editable="false"/>
+            <Label fx:id="totalToScrapeLabel" text="Of: "/>
+            <TextField fx:id="totalToScrapeTextField" editable="false"/>
+        </HBox>
+        <TextArea fx:id="messageDisplayArea" editable="false" style="-fx-background-color:grey;"/>
+    </VBox>
+
+</GridPane>
