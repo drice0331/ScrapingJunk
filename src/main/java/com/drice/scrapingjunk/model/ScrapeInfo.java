@@ -13,6 +13,7 @@ public class ScrapeInfo {
     String targetUrlPrefix;
     String targetUrlSuffix;
     String webElementSelector;
+    String backupSelector;
 
     public ScrapeInfo() {
 
@@ -25,6 +26,16 @@ public class ScrapeInfo {
         this.targetUrlPrefix = targetUrlPrefix;
         this.targetUrlSuffix = targetUrlSuffix;
         this.webElementSelector = webElementSelector;
+    }
+
+    public ScrapeInfo(String scrapeType, String loginUrl, String targetUrlPrefix,
+                      String targetUrlSuffix, String webElementSelector, String backupSelector) {
+        this.scrapeType = scrapeType;
+        this.loginUrl = loginUrl;
+        this.targetUrlPrefix = targetUrlPrefix;
+        this.targetUrlSuffix = targetUrlSuffix;
+        this.webElementSelector = webElementSelector;
+        this.backupSelector = backupSelector;
     }
 
     public String getScrapeType() {
@@ -67,6 +78,13 @@ public class ScrapeInfo {
         this.webElementSelector = webElementSelector;
     }
 
+    public String getBackupSelector() {
+        return backupSelector;
+    }
+
+    public void setBackupSelector(String backupSelector) {
+        this.backupSelector = backupSelector;
+    }
     @Override
     public String toString() {
         return this.scrapeType;

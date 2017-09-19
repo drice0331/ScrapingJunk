@@ -30,8 +30,25 @@ public class UrlWithParamScrapeController extends BaseScrapeController {
                 for (UrlParam urlParam : urlParams) {
                     targetUrlFull = targetUrlPrefix + urlParam.getValue() + targetUrlSuffix;
                     webDriver.navigate().to(targetUrlFull);
-                    WebElement targetElement = webDriver.findElement(By.cssSelector(elementSelector));
-                    result.add(targetElement.getText().trim());
+                    List<WebElement> targetElements = webDriver.findElements(By.cssSelector(elementSelector));
+                    if(targetElements != null && targetElements.size() > 0) {
+                        result.add(targetElements.get(0).getText().trim());
+                    } else {
+                        String backupSelector = scrapeInfo.getBackupSelector();
+                        if(backupSelector != null && !backupSelector.equals("")) {
+                            List<WebElement> backupElements = webDriver.findElements(
+                                    By.cssSelector(backupSelector));
+                            if(backupElements != null && backupElements.size() > 0) {
+                                result.add(backupElements.get(0).getText().trim());
+                            } else {
+                                sendMessageToListener("Both target selector and backup selector " +
+                                        "failed to find contact info for url " + targetUrlFull);
+                            }
+                        } else {
+                            sendMessageToListener("Target selector failed to find contact info for " +
+                                    "url " + targetUrlFull);
+                        }
+                    }
                     count++;
                     updateNumClientsToListener(count);
                 }
