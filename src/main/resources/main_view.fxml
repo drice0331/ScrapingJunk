@@ -49,6 +49,14 @@
                             backupSelector="b a[href$=&quot;#0.1_&quot;]"
                     />
                     <ScrapeInfo
+                            loginUrl=""
+                            scrapeType="Attorney General"
+                            targetUrlPrefix="http://hicsearch.attorneygeneral.gov"
+                            targetUrlSuffix=""
+                            webElementSelector=""
+                            backupSelector=""
+                    />
+                    <ScrapeInfo
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="Custom"
                             targetUrlPrefix=""

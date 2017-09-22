@@ -109,6 +109,47 @@ public abstract class BaseScrapeController {
         }
     }
 
+    protected WebElement getTDValueNextToTDCol(WebElement tableElem, String targetTDElemText) {
+        WebElement tdResultElem = null;
+
+        if(tableElem.getTagName().equals("table")) {
+            List<WebElement> listOfTDs = tableElem.findElements(By.tagName("td"));
+            int curTdElemInd = 0;
+            for(WebElement tdElem : listOfTDs) {
+                if(tdElem.getText().contains(targetTDElemText)) {
+                    if(listOfTDs.size() > curTdElemInd + 1) {
+                        tdResultElem = listOfTDs.get(curTdElemInd + 1);
+                    }
+                    break;
+                }
+                curTdElemInd++;
+            }
+        } else {
+            sendMessageToListener("Supposed table we're searching through is not a table");
+        }
+        return tdResultElem;
+    }
+
+    protected WebElement getWebElement(String selector) {
+        WebElement resultElem = null;
+        List<WebElement> webElements = this.webDriver.findElements(By.cssSelector(selector));
+        if(webElements != null && webElements.size() > 0) {
+            resultElem = webElements.get(0);
+        } else {
+            sendMessageToListener("Element for selector " + selector + " not found");
+        }
+        return resultElem;
+    }
+
+    protected void sendKeysWDelay(WebElement elem, String seq, int delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        elem.sendKeys(seq);
+    }
+
     public ScrapeControllerListener getScanControllerListener() {
         return this.scrapeControllerListener;
     }

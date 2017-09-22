@@ -4,6 +4,7 @@ import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfo;
 import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.scrapercontroller.AttorneyGeneralScrapeController;
 import com.drice.scrapingjunk.scrapercontroller.BaseScrapeController;
 import com.drice.scrapingjunk.scrapercontroller.UrlWithParamScrapeController;
 import com.drice.scrapingjunk.util.ScrapeTask;
@@ -95,55 +96,69 @@ public class MainViewController implements Initializable, ScrapeControllerListen
     }
 
     @FXML protected void handleScrapeCSVButtonAction(ActionEvent event) {
+        ScrapeInfo scrapeInfo = comboBox.getValue();
+        if(scrapeInfo != null) {
+            String scrapeSelected = scrapeInfo.getScrapeType();
+            if (!scrapeSelected.equals("EntityID to Phone Number") ||
+                    (!isNullOrBlank(user_name.getText()) && !isNullOrBlank(passwordField.getText()))) {
+                LoginCredentials loginCredentials = new LoginCredentials(user_name.getText(), passwordField.getText());
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choose CSV");
+                Node source = (Node) event.getSource();
+                Window stage = source.getScene().getWindow();
+                File file = fileChooser.showOpenDialog(stage);
+                if (file != null) {
+                    final String path = file.getAbsolutePath();
+                    List<UrlParam> urlParamList = getUrlParamListFromCSV(path, "", null);
+                    if (urlParamList != null && !urlParamList.isEmpty()) {
+                        BaseScrapeController scrapeController;
+                        if (scrapeSelected.equals("EntityID to Phone Number")) {
+                            scrapeController = new UrlWithParamScrapeController();
+                        } else if (scrapeSelected.equals("Attorney General")) {
+                            scrapeController = new AttorneyGeneralScrapeController();
+                        } else {
+                            scrapeController = new AttorneyGeneralScrapeController();
+                        }
+                        scrapeController.setScanControllerListener(this);
 
-        if(!isNullOrBlank(user_name.getText()) && !isNullOrBlank(passwordField.getText())) {
-            LoginCredentials loginCredentials = new LoginCredentials(user_name.getText(), passwordField.getText());
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose CSV");
-            Node source = (Node) event.getSource();
-            Window stage = source.getScene().getWindow();
-            File file = fileChooser.showOpenDialog(stage);
-            if(file != null) {
-                final String path = file.getAbsolutePath();
-                List<UrlParam> urlParamList = getUrlParamListFromCSV(path, "", null);
-                if (urlParamList != null && !urlParamList.isEmpty()) {
-                    BaseScrapeController scrapeController = new UrlWithParamScrapeController();
-                    scrapeController.setScanControllerListener(this);
-                    ScrapeInfo scrapeInfo = comboBox.getValue();
-                    boolean headlessBrowser = false;
+                        boolean headlessBrowser = false;
 
-                    currentScrapeTask = new ScrapeTask(scrapeController, scrapeInfo, loginCredentials,
-                            urlParamList, headlessBrowser);
-                    currentScrapeTask.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
-                            new EventHandler<WorkerStateEvent>() {
-                                public void handle(WorkerStateEvent t) {
-                                    List<Object> result = currentScrapeTask.getValue();
-                                    FileWriter fileWriter = null;
-                                    try {
-                                        fileWriter = new FileWriter("phone_numbers.csv");
-                                        for (Object o : result) {
-                                            fileWriter.append(o.toString() + "\n");
-                                        }
-                                        //fileWriter.append("\n");
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    } finally {
+                        currentScrapeTask = new ScrapeTask(scrapeController, scrapeInfo, loginCredentials,
+                                urlParamList, headlessBrowser);
+                        currentScrapeTask.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                                new EventHandler<WorkerStateEvent>() {
+                                    public void handle(WorkerStateEvent t) {
+                                        List<Object> result = currentScrapeTask.getValue();
+                                        FileWriter fileWriter = null;
                                         try {
-                                            fileWriter.flush();
-                                            fileWriter.close();
-                                        } catch (IOException ie) {
-                                            ie.printStackTrace();
+                                            fileWriter = new FileWriter("phone_numbers.csv");
+                                            for (Object o : result) {
+                                                fileWriter.append(o.toString() + "\n");
+                                            }
+                                            //fileWriter.append("\n");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            try {
+                                                fileWriter.flush();
+                                                fileWriter.close();
+                                            } catch (IOException ie) {
+                                                ie.printStackTrace();
+                                            }
                                         }
-                                    }
 
-                                }
-                            });
-                    currentScrapeTask.start();
+                                    }
+                                });
+                        currentScrapeTask.start();
+                    }
                 }
+            } else {
+                String alertMessage = "Please enter username and password";
+                createBasicAlert("Enter Login", alertMessage, Alert.AlertType.NONE);
             }
         } else {
-            String alertMessage = "Please enter username and password";
-            createBasicAlert("Enter Login", alertMessage, Alert.AlertType.NONE);
+            String alertMessage = "Please select a scrape type";
+            createBasicAlert("Select Scrape", alertMessage, Alert.AlertType.NONE);
         }
     }
 
