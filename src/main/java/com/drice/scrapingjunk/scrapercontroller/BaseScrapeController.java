@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -62,22 +63,16 @@ public abstract class BaseScrapeController {
                 sendMessageToListener("Webdriver set");
             } else {
                 //for debugging and dev work with a window
-                /*
 
-                File pathToBinary = new File("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
-                FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
-                FirefoxProfile firefoxProfile = new FirefoxProfile();
                 DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-                FirefoxOptions options = new FirefoxOptions();
-
-                options.addPreference("log", "{level: trace}");
                 capabilities.setCapability("marionette", true);
-                capabilities.setCapability("moz:firefoxOptions", options);
                 System.setProperty("webdriver.gecko.driver", "geckodriver" + webDriverFileType);
+                this.webDriver = new FirefoxDriver(capabilities);
 
-                 */
+                /*
                 System.setProperty("webdriver.chrome.driver", "chromedriver" + webDriverFileType);
                 this.webDriver = new ChromeDriver();
+                */
             }
             return true;
         } catch (Exception e) {

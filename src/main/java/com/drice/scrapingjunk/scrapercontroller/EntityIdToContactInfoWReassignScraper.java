@@ -41,7 +41,7 @@ public class EntityIdToContactInfoWReassignScraper extends EntityIdToContactInfo
                 try {
                     this.webDriver.navigate().to(reassignUrlWModifiedPhone);
 
-                    WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameChrome));
+                    WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameFireFox));
                     reassignButtonForm.submit();
                     sendMessageToListener("Clicked reassign button");
                     //click_ok_on_modal_popup_alert(reassignButtonForm);
@@ -59,7 +59,7 @@ public class EntityIdToContactInfoWReassignScraper extends EntityIdToContactInfo
                     try {
                         this.webDriver.navigate().to(reassignUrlWOriginalPhone);
 
-                        WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameChrome));
+                        WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameFireFox));
                         reassignButtonForm.submit();
                         sendMessageToListener("Clicked reassign button");
                         //click_ok_on_modal_popup_alert(reassignButtonForm);
