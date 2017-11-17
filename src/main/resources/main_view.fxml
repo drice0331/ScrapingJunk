@@ -58,6 +58,15 @@
                     />
                     <ScrapeInfo
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="EntityID to Phone Number Plus Reassign Button"
+                            targetUrlPrefix="https://csrtools.servicemagic.com/crm/modification/modification.crm?pageMode=Modifications&amp;entityID="
+                            targetUrlSuffix="&amp;modMode=review&amp;load=true"
+                            webElementSelector="tr.alternate-row1 td:nth-child(3)"
+                            backupSelector="b a[href$=&quot;#0.1_&quot;]"
+                    />
+
+                    <ScrapeInfo
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="Custom"
                             targetUrlPrefix=""
                             targetUrlSuffix=""

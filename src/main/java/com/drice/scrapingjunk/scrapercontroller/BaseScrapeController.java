@@ -62,6 +62,20 @@ public abstract class BaseScrapeController {
                 sendMessageToListener("Webdriver set");
             } else {
                 //for debugging and dev work with a window
+                /*
+
+                File pathToBinary = new File("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
+                FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
+                FirefoxProfile firefoxProfile = new FirefoxProfile();
+                DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+                FirefoxOptions options = new FirefoxOptions();
+
+                options.addPreference("log", "{level: trace}");
+                capabilities.setCapability("marionette", true);
+                capabilities.setCapability("moz:firefoxOptions", options);
+                System.setProperty("webdriver.gecko.driver", "geckodriver" + webDriverFileType);
+
+                 */
                 System.setProperty("webdriver.chrome.driver", "chromedriver" + webDriverFileType);
                 this.webDriver = new ChromeDriver();
             }

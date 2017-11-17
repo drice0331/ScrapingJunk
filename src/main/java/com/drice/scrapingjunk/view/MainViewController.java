@@ -4,9 +4,7 @@ import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfo;
 import com.drice.scrapingjunk.model.UrlParam;
-import com.drice.scrapingjunk.scrapercontroller.AttorneyGeneralScrapeController;
-import com.drice.scrapingjunk.scrapercontroller.BaseScrapeController;
-import com.drice.scrapingjunk.scrapercontroller.UrlWithParamScrapeController;
+import com.drice.scrapingjunk.scrapercontroller.*;
 import com.drice.scrapingjunk.util.ScrapeTask;
 import com.opencsv.CSVReader;
 import javafx.beans.value.ChangeListener;
@@ -99,7 +97,7 @@ public class MainViewController implements Initializable, ScrapeControllerListen
         ScrapeInfo scrapeInfo = comboBox.getValue();
         if(scrapeInfo != null) {
             String scrapeSelected = scrapeInfo.getScrapeType();
-            if (!scrapeSelected.equals("EntityID to Phone Number") ||
+            if (scrapeSelected.equals("Attorney General") ||
                     (!isNullOrBlank(user_name.getText()) && !isNullOrBlank(passwordField.getText()))) {
                 LoginCredentials loginCredentials = new LoginCredentials(user_name.getText(), passwordField.getText());
                 FileChooser fileChooser = new FileChooser();
@@ -113,9 +111,11 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                     if (urlParamList != null && !urlParamList.isEmpty()) {
                         BaseScrapeController scrapeController;
                         if (scrapeSelected.equals("EntityID to Phone Number")) {
-                            scrapeController = new UrlWithParamScrapeController();
+                            scrapeController = new EntityIdToContactInfoScraper();
                         } else if (scrapeSelected.equals("Attorney General")) {
                             scrapeController = new AttorneyGeneralScrapeController();
+                        } else if (scrapeSelected.equals("EntityID to Phone Number Plus Reassign Button")){
+                            scrapeController = new EntityIdToContactInfoWReassignScraper();
                         } else {
                             scrapeController = new AttorneyGeneralScrapeController();
                         }
