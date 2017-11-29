@@ -20,6 +20,9 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
     public void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
 
+        setBrowser(headlessBrowser);
+        setTotalClientsToListener(urlParams.size());        
+        
         String loginUrl = scrapeInfo.getLoginUrl();
         if(this.login(loginCredentials, loginUrl)) {
 
