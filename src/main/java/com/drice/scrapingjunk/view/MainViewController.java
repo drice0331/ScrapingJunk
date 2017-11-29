@@ -116,6 +116,8 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                             scrapeController = new AttorneyGeneralScrapeController();
                         } else if (scrapeSelected.equals("EntityID to Phone Number Plus Reassign Button")){
                             scrapeController = new EntityIdToContactInfoWReassignScraper();
+                        } else if (scrapeSelected.equals("Phone Number To Reassign Button")){
+                            scrapeController = new PhoneNumberToReassignUrl();
                         } else {
                             scrapeController = new AttorneyGeneralScrapeController();
                         }
@@ -131,9 +133,11 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                                         List<Object> result = currentScrapeTask.getValue();
                                         FileWriter fileWriter = null;
                                         try {
-                                            fileWriter = new FileWriter("phone_numbers.csv");
-                                            for (Object o : result) {
-                                                fileWriter.append(o.toString() + "\n");
+                                            if(result != null && result.size() > 0) {
+                                                fileWriter = new FileWriter("phone_numbers.csv");
+                                                for (Object o : result) {
+                                                    fileWriter.append(o.toString() + "\n");
+                                                }
                                             }
                                             //fileWriter.append("\n");
                                         } catch (IOException e) {

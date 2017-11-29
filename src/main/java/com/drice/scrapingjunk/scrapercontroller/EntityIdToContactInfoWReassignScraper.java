@@ -3,11 +3,10 @@ package com.drice.scrapingjunk.scrapercontroller;
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfo;
 import com.drice.scrapingjunk.model.UrlParam;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -39,37 +38,23 @@ public class EntityIdToContactInfoWReassignScraper extends EntityIdToContactInfo
                 String reassignUrlWModifiedPhone = reassignBaseUrl + modifiedContactInfo;
                 boolean buttonFound = false;
                 try {
+                    sendMessageToListener("About to navigate to " + reassignUrlWModifiedPhone);
                     this.webDriver.navigate().to(reassignUrlWModifiedPhone);
 
-                    WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameFireFox));
+                    WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameChrome));
                     reassignButtonForm.submit();
-                    sendMessageToListener("Clicked reassign button");
-                    //click_ok_on_modal_popup_alert(reassignButtonForm);
-                    //WebElement webElement = this.webDriver.findElement(By.cssSelector(buttonSelector));
-                    //webElement.click();
-                    buttonFound = true;
+                    sendMessageToListener("Clicked reassign button - reassign url modified phone");
+
+                    //new WebDriverWait(webDriver).until(ExpectedConditions.alertIsPresen‌​t());
+                    this.webDriver.switchTo().alert().accept();
                 } catch (NoSuchElementException noSuchElementException) {
                     sendMessageToListener("Button element not found within reassignUrlWModifiedPhone url");
+                } catch (NoAlertPresentException ex) {
+                    sendMessageToListener("Alert not found, keep scraping");
+                } catch (TimeoutException te) {
+                    sendMessageToListener("Timeout exception caught, should just ignore and keep scraping");
                 } catch (Exception e) {
-                    sendMessageToListener("Exception caught on reassignUrlWModifiedPhone - ");// + e.getMessage());
-                }
-
-                if(!buttonFound) {
-                    String reassignUrlWOriginalPhone = reassignBaseUrl + originalContactInfo;
-                    try {
-                        this.webDriver.navigate().to(reassignUrlWOriginalPhone);
-
-                        WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameFireFox));
-                        reassignButtonForm.submit();
-                        sendMessageToListener("Clicked reassign button");
-                        //click_ok_on_modal_popup_alert(reassignButtonForm);
-                        //WebElement webElement = this.webDriver.findElement(By.cssSelector(buttonSelector));
-                        //webElement.click();
-                    } catch (NoSuchElementException noSuchElementException) {
-                        sendMessageToListener("Button element not found within reassignUrlWOriginalPhone url");
-                    } catch (Exception e) {
-                        sendMessageToListener("Exception caught on reassignUrlWOriginalPhone - ");// + e.getMessage());
-                    }
+                    sendMessageToListener("Exception caught on reassignUrlWModifiedPhone - " + e.getMessage());// + e.getMessage());
                 }
             }
         }

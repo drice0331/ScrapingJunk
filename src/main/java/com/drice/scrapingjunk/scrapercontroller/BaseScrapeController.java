@@ -64,15 +64,17 @@ public abstract class BaseScrapeController {
             } else {
                 //for debugging and dev work with a window
 
+                /*
+                System.setProperty("webdriver.gecko.driver", "geckodriver" + webDriverFileType);
+                sendMessageToListener("geckodriver path set");
                 DesiredCapabilities capabilities = DesiredCapabilities.firefox();
                 capabilities.setCapability("marionette", true);
-                System.setProperty("webdriver.gecko.driver", "geckodriver" + webDriverFileType);
+                sendMessageToListener("caps set");
                 this.webDriver = new FirefoxDriver(capabilities);
-
-                /*
+                sendMessageToListener("webdriver set");
+                */
                 System.setProperty("webdriver.chrome.driver", "chromedriver" + webDriverFileType);
                 this.webDriver = new ChromeDriver();
-                */
             }
             return true;
         } catch (Exception e) {

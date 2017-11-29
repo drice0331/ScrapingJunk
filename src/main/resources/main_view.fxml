@@ -67,6 +67,15 @@
 
                     <ScrapeInfo
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="Phone Number To Reassign Button"
+                            targetUrlPrefix="https://csrtools.servicemagic.com/crm/hunter/duplicate.crm?pageMode=HS&amp;keepSameSalesRep=true&amp;hunter=true&amp;metered=false&amp;busPhone="
+                            targetUrlSuffix=""
+                            webElementSelector=""
+                            backupSelector=""
+                    />
+
+                    <ScrapeInfo
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="Custom"
                             targetUrlPrefix=""
                             targetUrlSuffix=""
