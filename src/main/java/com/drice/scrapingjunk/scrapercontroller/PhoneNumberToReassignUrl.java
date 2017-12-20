@@ -4,6 +4,7 @@ import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfo;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 
@@ -12,7 +13,10 @@ import java.util.List;
  */
 public class PhoneNumberToReassignUrl extends BaseScrapeController {
 
-    private String buttonSelector = "input[type=button]";
+    private String buttonSelector = "input[type=submit]";
+    private String buttonSelector2 = "input.crm-button";
+    private String buttonSelector3 = "input[type=button]";
+    private String buttonSelector4 = ".crm-button";
     private String formReassignButtonNameChrome = "duplicateForm";
     public String reassignBaseUrl = "https://csrtools.servicemagic.com/crm/hunter/duplicate.crm?pageMode=HS&keepSameSalesRep=true&hunter=true&metered=false&busPhone=";
     private String regexNumber = "[0-9]*";
@@ -36,19 +40,23 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
                 if (modifiedContactInfo.matches(regexNumber)) {
                     //Assume we have a valid phone number
                     String reassignUrlWModifiedPhone = reassignBaseUrl + modifiedContactInfo;
-                    boolean buttonFound = false;
                     try {
                         sendMessageToListener("About to navigate to " + reassignUrlWModifiedPhone);
                         this.webDriver.navigate().to(reassignUrlWModifiedPhone);
 
                         WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameChrome));
-                        reassignButtonForm.submit();
-                        sendMessageToListener("Clicked reassign button - reassign url modified phone");
+                        List<WebElement> buttonElemList = this.webDriver.findElements(By.cssSelector(buttonSelector));
 
-                        //new WebDriverWait(webDriver).until(ExpectedConditions.alertIsPresen‌​t());
-                        this.webDriver.switchTo().alert().accept();
+                        if(buttonElemList != null && buttonElemList.size() > 0) {
+                            submitWithRandomDelay(reassignButtonForm);
+                            sendMessageToListener("Clicked reassign button - reassign url modified phone");
+                            //new WebDriverWait(webDriver).until(ExpectedConditions.alertIsPresent());
+                            this.webDriver.switchTo().alert().accept();
+                        } else {
+                            sendMessageToListener("Reassign button not found, skipping that part for this client");
+                        }
                     } catch (NoSuchElementException noSuchElementException) {
-                        sendMessageToListener("Button element not found within reassignUrlWModifiedPhone url");
+                        sendMessageToListener("Reassign button or form element not found url, going to next contact");
                     } catch (NoAlertPresentException ex) {
                         sendMessageToListener("Alert not found, keep scraping");
                     } catch (TimeoutException te) {

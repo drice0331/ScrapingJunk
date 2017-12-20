@@ -62,17 +62,6 @@ public abstract class BaseScrapeController {
                 this.webDriver = new PhantomJSDriver(caps);
                 sendMessageToListener("Webdriver set");
             } else {
-                //for debugging and dev work with a window
-
-                /*
-                System.setProperty("webdriver.gecko.driver", "geckodriver" + webDriverFileType);
-                sendMessageToListener("geckodriver path set");
-                DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-                capabilities.setCapability("marionette", true);
-                sendMessageToListener("caps set");
-                this.webDriver = new FirefoxDriver(capabilities);
-                sendMessageToListener("webdriver set");
-                */
                 System.setProperty("webdriver.chrome.driver", "chromedriver" + webDriverFileType);
                 this.webDriver = new ChromeDriver();
             }
@@ -161,6 +150,25 @@ public abstract class BaseScrapeController {
         elem.sendKeys(seq);
     }
 
+    protected void submitWithRandomDelay(WebElement elem) {
+        addRandomDelay();
+        try {
+            elem.submit();
+        } catch (Exception e) {
+            sendMessageToListener("Exception caught when trying to submit webElement");
+        }
+    }
+
+    protected void addRandomDelay() {
+        try {
+            Double ratio = Math.random();
+            Double millis = (ratio * 2000) + 1000;
+            Thread.sleep(millis.intValue());
+        } catch (InterruptedException ie) {
+            sendMessageToListener("Error adding random delay");
+        }
+    }
+
     public ScrapeControllerListener getScanControllerListener() {
         return this.scrapeControllerListener;
     }
@@ -183,6 +191,10 @@ public abstract class BaseScrapeController {
 
     public void setRunning(boolean running) {
         isRunning = running;
+    }
+
+    public WebDriver getWebDriver() {
+        return this.webDriver;
     }
 
 }
