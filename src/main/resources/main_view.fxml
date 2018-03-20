@@ -13,7 +13,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.collections.FXCollections?>
-<?import com.drice.scrapingjunk.model.ScrapeInfo?>
+<?import com.drice.scrapingjunk.model.ScrapeInfoAndInput?>
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextArea?>
@@ -40,7 +40,7 @@
         <ComboBox fx:id="comboBox">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <ScrapeInfo
+                    <ScrapeInfoAndInput
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="EntityID to Phone Number"
                             targetUrlPrefix="https://csrtools.servicemagic.com/crm/modification/modification.crm?pageMode=Modifications&amp;entityID="
@@ -48,7 +48,7 @@
                             webElementSelector="tr.alternate-row1 td:nth-child(3)"
                             backupSelector="b a[href$=&quot;#0.1_&quot;]"
                     />
-                    <ScrapeInfo
+                    <ScrapeInfoAndInput
                             loginUrl=""
                             scrapeType="Attorney General"
                             targetUrlPrefix="http://hicsearch.attorneygeneral.gov"
@@ -56,7 +56,7 @@
                             webElementSelector=""
                             backupSelector=""
                     />
-                    <ScrapeInfo
+                    <ScrapeInfoAndInput
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="EntityID to Phone Number Plus Reassign Button"
                             targetUrlPrefix="https://csrtools.servicemagic.com/crm/modification/modification.crm?pageMode=Modifications&amp;entityID="
@@ -65,7 +65,7 @@
                             backupSelector="b a[href$=&quot;#0.1_&quot;]"
                     />
 
-                    <ScrapeInfo
+                    <ScrapeInfoAndInput
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="Phone Number To Reassign Button"
                             targetUrlPrefix="https://csrtools.servicemagic.com/crm/hunter/duplicate.crm?pageMode=HS&amp;keepSameSalesRep=true&amp;hunter=true&amp;metered=false&amp;busPhone="
@@ -74,7 +74,18 @@
                             backupSelector=""
                     />
 
-                    <ScrapeInfo
+                    <ScrapeInfoAndInput
+                            fx:id="emailClientByEntityIdOption"
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="Email Client By EntityID"
+                            targetUrlPrefix="https://csrtools.servicemagic.com/crm/communications/spSendEmailLoad.crm?entityID="
+                            targetUrlSuffix=""
+                            webElementSelector=""
+                            backupSelector=""
+                            emailTemplateNumber=""
+                    />
+
+                    <ScrapeInfoAndInput
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
                             scrapeType="Custom"
                             targetUrlPrefix=""
@@ -85,6 +96,19 @@
         </ComboBox>
         <Button text="Scrape from CSV"
                 onAction="#handleScrapeCSVButtonAction"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="6">
+        <ComboBox fx:id="emailTemplateTypeComboBox" disable="true">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="500"/>
+                    <String fx:value="537"/>
+                    <String fx:value="5600"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
     </HBox>
 
     <VBox spacing="5" maxWidth="700" GridPane.columnIndex="0" GridPane.rowIndex="10" GridPane.columnSpan="8">

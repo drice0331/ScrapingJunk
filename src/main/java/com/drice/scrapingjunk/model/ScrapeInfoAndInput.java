@@ -1,11 +1,9 @@
 package com.drice.scrapingjunk.model;
 
-import com.drice.scrapingjunk.scrapercontroller.BaseScrapeController;
-
 /**
  * Created by DrIce on 8/26/17.
  */
-public class ScrapeInfo {
+public class ScrapeInfoAndInput {
 
     String scrapeType;
     //private Class scrapeControllerClass;
@@ -15,12 +13,15 @@ public class ScrapeInfo {
     String webElementSelector;
     String backupSelector;
 
-    public ScrapeInfo() {
+    //Figure out way to make this cleaner, whether this is in this class or not
+    String emailTemplateNumber;
+
+    public ScrapeInfoAndInput() {
 
     }
 
-    public ScrapeInfo(String scrapeType, String loginUrl, String targetUrlPrefix,
-                      String targetUrlSuffix, String webElementSelector) {
+    public ScrapeInfoAndInput(String scrapeType, String loginUrl, String targetUrlPrefix,
+                              String targetUrlSuffix, String webElementSelector) {
         this.scrapeType = scrapeType;
         this.loginUrl = loginUrl;
         this.targetUrlPrefix = targetUrlPrefix;
@@ -28,8 +29,8 @@ public class ScrapeInfo {
         this.webElementSelector = webElementSelector;
     }
 
-    public ScrapeInfo(String scrapeType, String loginUrl, String targetUrlPrefix,
-                      String targetUrlSuffix, String webElementSelector, String backupSelector) {
+    public ScrapeInfoAndInput(String scrapeType, String loginUrl, String targetUrlPrefix,
+                              String targetUrlSuffix, String webElementSelector, String backupSelector) {
         this.scrapeType = scrapeType;
         this.loginUrl = loginUrl;
         this.targetUrlPrefix = targetUrlPrefix;
@@ -85,6 +86,16 @@ public class ScrapeInfo {
     public void setBackupSelector(String backupSelector) {
         this.backupSelector = backupSelector;
     }
+
+
+    public String getEmailTemplateNumber() {
+        return emailTemplateNumber;
+    }
+
+    public void setEmailTemplateNumber(String emailTemplateNumber) {
+        this.emailTemplateNumber = emailTemplateNumber;
+    }
+
     @Override
     public String toString() {
         return this.scrapeType;

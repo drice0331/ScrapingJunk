@@ -1,7 +1,7 @@
 package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -18,7 +18,7 @@ public class AttorneyGeneralScrapeController extends BaseScrapeController {
     private final String resultTableSelector = "#gvBusiness_tcrow0 table";
     private final String phoneColText = "Phone";
 
-    public void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams, List<Object> result, boolean headlessBrowser) {
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams, List<Object> result, boolean headlessBrowser) {
         setBrowser(headlessBrowser);
 
         setTotalClientsToListener(urlParams.size());

@@ -1,7 +1,7 @@
 package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -13,10 +13,9 @@ import java.util.List;
  */
 public class UrlWithParamScrapeController extends BaseScrapeController {
 
-    public void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
         setBrowser(headlessBrowser);
-
         setTotalClientsToListener(urlParams.size());
 
         String loginUrl = scrapeInfo.getLoginUrl();

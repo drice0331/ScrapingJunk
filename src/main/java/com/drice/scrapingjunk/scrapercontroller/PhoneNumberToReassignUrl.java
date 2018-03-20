@@ -1,10 +1,9 @@
 package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
     public String reassignBaseUrl = "https://csrtools.servicemagic.com/crm/hunter/duplicate.crm?pageMode=HS&keepSameSalesRep=true&hunter=true&metered=false&busPhone=";
     private String regexNumber = "[0-9]*";
 
-    public void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
 
         setBrowser(headlessBrowser);
@@ -45,9 +44,9 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
                         this.webDriver.navigate().to(reassignUrlWModifiedPhone);
 
                         WebElement reassignButtonForm = this.webDriver.findElement(By.name(formReassignButtonNameChrome));
-                        List<WebElement> buttonElemList = this.webDriver.findElements(By.cssSelector(buttonSelector));
+                        WebElement buttonElem = getWebElement(buttonSelector);
 
-                        if(buttonElemList != null && buttonElemList.size() > 0) {
+                        if(buttonElem != null) {
                             submitWithRandomDelay(reassignButtonForm);
                             sendMessageToListener("Clicked reassign button - reassign url modified phone");
                             //new WebDriverWait(webDriver).until(ExpectedConditions.alertIsPresent());

@@ -2,14 +2,13 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -39,7 +38,7 @@ public abstract class BaseScrapeController {
     protected void init() {
     }
 
-    public abstract void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public abstract void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
                                      List<Object> result, boolean headlessBrowser);
 
     protected boolean setBrowser(boolean headlessBrowser) {
@@ -97,11 +96,11 @@ public abstract class BaseScrapeController {
             WebElement usernameElem = webDriver.findElement(By.name(loginUsernameSelector));
             WebElement passwordElem = webDriver.findElement(By.name(passwordSelector));
             WebElement submitButton = webDriver.findElement(By.cssSelector(submitButtonSelector));
-
             usernameElem.sendKeys(loginCredentials.getUsername());
             passwordElem.sendKeys(loginCredentials.getPassword());
 
-            submitButton.submit();
+            //submitButton.submit();
+            submitButton.click();
             return true;
         } catch (Exception e) {
             sendMessageToListener("Login failed - " + e.getMessage());

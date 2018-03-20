@@ -1,12 +1,10 @@
 package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class EntityIdToContactInfoWReassignScraper extends EntityIdToContactInfo
 
 
 
-    public void startScrape(ScrapeInfo scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
         super.startScrape(scrapeInfo, loginCredentials, urlParams, result, headlessBrowser);
 

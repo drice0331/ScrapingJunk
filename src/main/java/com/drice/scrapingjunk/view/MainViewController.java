@@ -2,9 +2,10 @@ package com.drice.scrapingjunk.view;
 
 import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
-import com.drice.scrapingjunk.model.ScrapeInfo;
+import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
 import com.drice.scrapingjunk.model.UrlParam;
 import com.drice.scrapingjunk.scrapercontroller.*;
+import com.drice.scrapingjunk.util.Constants;
 import com.drice.scrapingjunk.util.ScrapeTask;
 import com.opencsv.CSVReader;
 import javafx.beans.value.ChangeListener;
@@ -41,7 +42,13 @@ public class MainViewController implements Initializable, ScrapeControllerListen
     private TextField passwordField;
 
     @FXML
-    ComboBox<ScrapeInfo> comboBox;
+    ComboBox<ScrapeInfoAndInput> comboBox;
+
+    @FXML
+    ScrapeInfoAndInput emailClientByEntityIdOption;
+
+    @FXML
+    ComboBox<String> emailTemplateTypeComboBox;
 
     @FXML
     private TextArea messageDisplayArea;
@@ -58,18 +65,11 @@ public class MainViewController implements Initializable, ScrapeControllerListen
     //This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
-        /*
-        final ObservableList<ScrapeInfo> scanOptions =
-                FXCollections.observableArrayList(
-                        new ScrapeInfo("blah", "", "", "", "")
-                );
-        comboBox = new ComboBox<ScrapeInfo>(scanOptions);
-        */
-        comboBox.setCellFactory(new Callback<ListView<ScrapeInfo>, ListCell<ScrapeInfo>>() {
-            public ListCell<ScrapeInfo> call(ListView<ScrapeInfo> p) {
-                return new ListCell<ScrapeInfo>() {
+        comboBox.setCellFactory(new Callback<ListView<ScrapeInfoAndInput>, ListCell<ScrapeInfoAndInput>>() {
+            public ListCell<ScrapeInfoAndInput> call(ListView<ScrapeInfoAndInput> p) {
+                return new ListCell<ScrapeInfoAndInput>() {
 
-                    @Override protected void updateItem(ScrapeInfo item, boolean empty) {
+                    @Override protected void updateItem(ScrapeInfoAndInput item, boolean empty) {
                         super.updateItem(item, empty);
 
                         if (item == null || empty) {
@@ -85,20 +85,37 @@ public class MainViewController implements Initializable, ScrapeControllerListen
         });
 
         comboBox.setEditable(false);
-        comboBox.valueProperty().addListener(new ChangeListener<ScrapeInfo>() {
-            public void changed(ObservableValue<? extends ScrapeInfo> observable,
-                                ScrapeInfo oldValue, ScrapeInfo newValue) {
+        comboBox.valueProperty().addListener(new ChangeListener<ScrapeInfoAndInput>() {
+            public void changed(ObservableValue<? extends ScrapeInfoAndInput> observable,
+                                ScrapeInfoAndInput oldValue, ScrapeInfoAndInput newValue) {
+                //System.out.println("changed comboBox " + newValue.getScrapeType());
+                if(oldValue != null && oldValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID) &&
+                        !newValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
+                    emailTemplateTypeComboBox.setDisable(true);
+                } else if(newValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
+                    if(newValue.getEmailTemplateNumber() != null) {
+                        //System.out.println("email template number now " + newValue.getEmailTemplateNumber());
+                    }
+                    emailTemplateTypeComboBox.setDisable(false);
+                }
+            }
+        });
 
+        emailTemplateTypeComboBox.setEditable(false);
+        emailTemplateTypeComboBox.valueProperty().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observable,
+                                String oldValue, String newValue) {
+                //System.out.println("changed emailTemplateTypeComboBox " + oldValue + " | " + newValue);
+                emailClientByEntityIdOption.setEmailTemplateNumber(newValue);
             }
         });
     }
 
     @FXML protected void handleScrapeCSVButtonAction(ActionEvent event) {
-        ScrapeInfo scrapeInfo = comboBox.getValue();
+        ScrapeInfoAndInput scrapeInfo = comboBox.getValue();
         if(scrapeInfo != null) {
             String scrapeSelected = scrapeInfo.getScrapeType();
-            if (scrapeSelected.equals("Attorney General") ||
-                    (!isNullOrBlank(user_name.getText()) && !isNullOrBlank(passwordField.getText()))) {
+            if (checkScrapeOkForSelection(scrapeSelected)) {
                 LoginCredentials loginCredentials = new LoginCredentials(user_name.getText(), passwordField.getText());
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Choose CSV");
@@ -110,14 +127,16 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                     List<UrlParam> urlParamList = getUrlParamListFromCSV(path, "", null);
                     if (urlParamList != null && !urlParamList.isEmpty()) {
                         BaseScrapeController scrapeController;
-                        if (scrapeSelected.equals("EntityID to Phone Number")) {
+                        if (scrapeSelected.equals(Constants.ENTITY_ID_TO_PHONE)) {
                             scrapeController = new EntityIdToContactInfoScraper();
-                        } else if (scrapeSelected.equals("Attorney General")) {
+                        } else if (scrapeSelected.equals(Constants.ATTORNEY_GENERAL)) {
                             scrapeController = new AttorneyGeneralScrapeController();
-                        } else if (scrapeSelected.equals("EntityID to Phone Number Plus Reassign Button")){
+                        } else if (scrapeSelected.equals(Constants.ENTITY_ID_TO_PHONE_NUMBER_PLUS_REASSIGN_BUTTON)) {
                             scrapeController = new EntityIdToContactInfoWReassignScraper();
-                        } else if (scrapeSelected.equals("Phone Number To Reassign Button")){
+                        } else if (scrapeSelected.equals(Constants.PHONE_NUMBER_TO_REASSIGN_BUTTON)) {
                             scrapeController = new PhoneNumberToReassignUrl();
+                        } else if (scrapeSelected.equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
+                            scrapeController = new EmailClientByEntityIdScrapController();
                         } else {
                             scrapeController = new AttorneyGeneralScrapeController();
                         }
@@ -133,7 +152,7 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                                         List<Object> result = currentScrapeTask.getValue();
                                         FileWriter fileWriter = null;
                                         try {
-                                            if(result != null && result.size() > 0) {
+                                            if (result != null && result.size() > 0) {
                                                 fileWriter = new FileWriter("phone_numbers.csv");
                                                 for (Object o : result) {
                                                     fileWriter.append(o.toString() + "\n");
@@ -156,9 +175,6 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                         currentScrapeTask.start();
                     }
                 }
-            } else {
-                String alertMessage = "Please enter username and password";
-                createBasicAlert("Enter Login", alertMessage, Alert.AlertType.NONE);
             }
         } else {
             String alertMessage = "Please select a scrape type";
@@ -209,6 +225,22 @@ public class MainViewController implements Initializable, ScrapeControllerListen
             createBasicAlert(title, alertMessage, Alert.AlertType.NONE);
         }
         return urlParamList;
+    }
+
+    public boolean checkScrapeOkForSelection(String scrapeSelected) {
+        boolean scrapeIsOk = true;
+        if(!scrapeSelected.equals(Constants.ATTORNEY_GENERAL) &&
+                (isNullOrBlank(user_name.getText()) || isNullOrBlank(passwordField.getText()))) {
+            scrapeIsOk = false;
+            String alertMessage = "Please enter username and password";
+            createBasicAlert("Enter Login", alertMessage, Alert.AlertType.NONE);
+        } else if(scrapeSelected.equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID) &&
+                isNullOrBlank(emailClientByEntityIdOption.getEmailTemplateNumber())) {
+            scrapeIsOk = false;
+            String alertMessage = "Cannot Email Client by Entity Id scrape without selecting email template number";
+            createBasicAlert("Select Email Template Number", alertMessage, Alert.AlertType.NONE);
+        }
+        return scrapeIsOk;
     }
 
 
