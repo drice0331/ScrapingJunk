@@ -26,6 +26,7 @@ public class EmailClientByEntityIdScrapController extends BaseScrapeController {
         String loginUrl = scrapeInfo.getLoginUrl();
         if (this.login(loginCredentials, loginUrl)) {
             try {
+                int count = 0;
                 for (UrlParam urlParam : urlParams) {
                     //Navigate to send email page
                     String sendEmailUrlForEntityId = sendEmailUrl + urlParam.getValue();
@@ -38,6 +39,8 @@ public class EmailClientByEntityIdScrapController extends BaseScrapeController {
                         throw new NoSuchElementException("");
                     }
                     sendButtonElement.click();
+                    count++;
+                    updateNumClientsToListener(count);
                 }
             } catch (NoSuchElementException noSuchElementException) {
                 sendMessageToListener("EmailSendButtonSelector for template " + scrapeInfo.getEmailTemplateNumber()

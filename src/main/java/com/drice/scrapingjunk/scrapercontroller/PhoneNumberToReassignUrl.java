@@ -29,6 +29,8 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
         String loginUrl = scrapeInfo.getLoginUrl();
         if(this.login(loginCredentials, loginUrl)) {
 
+            int count = 0;
+
             //Go through result list
             for (UrlParam contactInfo : urlParams) {
                 String modifiedContactInfo = contactInfo.getValue();
@@ -64,6 +66,8 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
                         sendMessageToListener("Exception caught on reassignUrlWModifiedPhone - " + e.getMessage());// + e.getMessage());
                     }
                 }
+                count++;
+                updateNumClientsToListener(count);
             }
         }
     }
