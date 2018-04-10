@@ -87,10 +87,17 @@
 
                     <ScrapeInfoAndInput
                             loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
-                            scrapeType="Custom"
+                            scrapeType="Custom Url Param"
                             targetUrlPrefix=""
                             targetUrlSuffix=""
                             webElementSelector=""/>
+                    <ScrapeInfoAndInput
+                            loginUrl="https://csrtools.servicemagic.com/crm/jsps/index.jsp"
+                            scrapeType="Custom Searchbar Param"
+                            targetUrlPrefix=""
+                            targetUrlSuffix=""
+                            webElementSelector=""/>
+
                 </FXCollections>
             </items>
         </ComboBox>
@@ -98,9 +105,10 @@
                 onAction="#handleScrapeCSVButtonAction"/>
     </HBox>
 
-    <HBox spacing="10" alignment="bottom_right"
-          GridPane.columnIndex="1" GridPane.rowIndex="6">
-        <ComboBox fx:id="emailTemplateTypeComboBox" disable="true">
+    <HBox fx:id="emailTemplateHBox" spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="6" disable="true">
+        <Label fx:id="emailTemplateComboBoxLabel" text="Email Template: " />
+        <ComboBox fx:id="emailTemplateTypeComboBox" >
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="500"/>
@@ -111,7 +119,29 @@
         </ComboBox>
     </HBox>
 
-    <VBox spacing="5" maxWidth="700" GridPane.columnIndex="0" GridPane.rowIndex="10" GridPane.columnSpan="8">
+    <VBox fx:id="customScrapeInfoAndInputsVBox" spacing="5" maxWidth="700" GridPane.columnIndex="0"
+          GridPane.rowIndex="8" GridPane.columnSpan="8" disable="true">
+        <HBox fx:id="customLoginUrlAndElemSelHBox" spacing="10">
+            <Label fx:id="customLoginUrlLabel" text="Login URL: "/>
+            <TextField fx:id="customLoginUrlTextField"/>
+            <Label fx:id="customElemSelLabel" text="Element Selector: "/>
+            <TextField fx:id="customElemSelTextField"/>
+        </HBox>
+        <HBox fx:id="customPrefixSuffixUrlHBox" spacing="5">
+            <Label fx:id="customPrefixUrlLabel" text="Url Prefix: "/>
+            <TextField fx:id="customPrefixUrlTextField"/>
+            <Label fx:id="customSuffixUrlLabel" text="Url Suffix: "/>
+            <TextField fx:id="customSuffixUrlTextField"/>
+        </HBox>
+        <HBox fx:id="customSearchbarSelHBox" spacing="5">
+            <Label fx:id="customSearchbarSelLabel" text="Searchbar Selector:"/>
+            <TextField fx:id="customSearchbarSelTextField"/>
+            <Label fx:id="customSearchButtonSelLabel" text="Search Button Selector:"/>
+            <TextField fx:id="customSearchButtonSelTextField"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="5" maxWidth="700" GridPane.columnIndex="0" GridPane.rowIndex="14" GridPane.columnSpan="8">
         <HBox fx:id="currentUrlTextDisplays" spacing="5">
             <Label fx:id="urlTextLabelDisplay" text="URL: "/>
             <TextField fx:id="urlTextFieldDisplay" editable="false"/>

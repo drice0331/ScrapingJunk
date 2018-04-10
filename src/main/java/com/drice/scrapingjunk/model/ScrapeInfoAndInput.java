@@ -6,15 +6,17 @@ package com.drice.scrapingjunk.model;
 public class ScrapeInfoAndInput {
 
     String scrapeType;
-    //private Class scrapeControllerClass;
+
     String loginUrl;
     String targetUrlPrefix;
     String targetUrlSuffix;
     String webElementSelector;
     String backupSelector;
 
-    //Figure out way to make this cleaner, whether this is in this class or not
+    //Figure out way to make this cleaner, whether these are in this class or not
     String emailTemplateNumber;
+    String searchBarSelector;
+    String searchButtonSelector;
 
     public ScrapeInfoAndInput() {
 
@@ -87,13 +89,28 @@ public class ScrapeInfoAndInput {
         this.backupSelector = backupSelector;
     }
 
-
     public String getEmailTemplateNumber() {
         return emailTemplateNumber;
     }
 
     public void setEmailTemplateNumber(String emailTemplateNumber) {
         this.emailTemplateNumber = emailTemplateNumber;
+    }
+
+    public String getSearchBarSelector() {
+        return searchBarSelector;
+    }
+
+    public void setSearchBarSelector(String searchBarSelector) {
+        this.searchBarSelector = searchBarSelector;
+    }
+
+    public String getSearchButtonSelector() {
+        return searchButtonSelector;
+    }
+
+    public void setSearchButtonSelector(String searchButtonSelector) {
+        this.searchButtonSelector = searchButtonSelector;
     }
 
     @Override

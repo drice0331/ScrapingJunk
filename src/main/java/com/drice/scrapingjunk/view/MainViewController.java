@@ -3,7 +3,7 @@ package com.drice.scrapingjunk.view;
 import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import com.drice.scrapingjunk.scrapercontroller.*;
 import com.drice.scrapingjunk.util.Constants;
 import com.drice.scrapingjunk.util.ScrapeTask;
@@ -17,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Callback;
@@ -48,7 +50,34 @@ public class MainViewController implements Initializable, ScrapeControllerListen
     ScrapeInfoAndInput emailClientByEntityIdOption;
 
     @FXML
+    HBox emailTemplateHBox;
+
+    @FXML
     ComboBox<String> emailTemplateTypeComboBox;
+
+    @FXML
+    VBox customScrapeInfoAndInputsVBox;
+
+    @FXML
+    TextField customLoginUrlTextField;
+
+    @FXML
+    TextField customElemSelTextField;
+
+    @FXML
+    TextField customPrefixUrlTextField;
+
+    @FXML
+    TextField customSuffixUrlTextField;
+
+    @FXML
+    HBox customSearchbarSelHBox;
+
+    @FXML
+    TextField customSearchbarSelTextField;
+
+    @FXML
+    TextField customSearchButtonSelTextField;
 
     @FXML
     private TextArea messageDisplayArea;
@@ -61,6 +90,9 @@ public class MainViewController implements Initializable, ScrapeControllerListen
 
     @FXML
     private TextField totalToScrapeTextField;
+
+    private String emailButtonSelector = "input[onclick=submitForm(this.form, 'TEMPLATENUMBER')]";
+    private String templateNumberPlaceholder = "TEMPLATENUMBER";
 
     //This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -91,12 +123,24 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                 //System.out.println("changed comboBox " + newValue.getScrapeType());
                 if(oldValue != null && oldValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID) &&
                         !newValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
-                    emailTemplateTypeComboBox.setDisable(true);
+                    emailTemplateHBox.setDisable(true);
                 } else if(newValue.getScrapeType().equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
                     if(newValue.getEmailTemplateNumber() != null) {
                         //System.out.println("email template number now " + newValue.getEmailTemplateNumber());
                     }
-                    emailTemplateTypeComboBox.setDisable(false);
+                    emailTemplateHBox.setDisable(false);
+                }
+
+                if(oldValue != null && oldValue.getScrapeType().contains(Constants.CUSTOM)
+                        && !newValue.getScrapeType().contains(Constants.CUSTOM)) {
+                    customScrapeInfoAndInputsVBox.setDisable(true);
+                } else if(newValue.getScrapeType().contains(Constants.CUSTOM)) {
+                    customScrapeInfoAndInputsVBox.setDisable(false);
+                    if(newValue.getScrapeType().equals(Constants.CUSTOM_SEARCHBAR_PARAM)) {
+                        customSearchbarSelHBox.setDisable(false);
+                    } else {
+                        customSearchbarSelHBox.setDisable(true);
+                    }
                 }
             }
         });
@@ -107,6 +151,9 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                                 String oldValue, String newValue) {
                 //System.out.println("changed emailTemplateTypeComboBox " + oldValue + " | " + newValue);
                 emailClientByEntityIdOption.setEmailTemplateNumber(newValue);
+                String emailButtonSelector4Template = emailButtonSelector;
+                emailButtonSelector4Template = emailButtonSelector4Template.replace(templateNumberPlaceholder, newValue);
+                emailClientByEntityIdOption.setWebElementSelector(emailButtonSelector4Template);
             }
         });
     }
@@ -124,7 +171,7 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                 File file = fileChooser.showOpenDialog(stage);
                 if (file != null) {
                     final String path = file.getAbsolutePath();
-                    List<UrlParam> urlParamList = getUrlParamListFromCSV(path, "", null);
+                    List<CSVInputParam> urlParamList = getUrlParamListFromCSV(path, "", null);
                     if (urlParamList != null && !urlParamList.isEmpty()) {
                         BaseScrapeController scrapeController;
                         if (scrapeSelected.equals(Constants.ENTITY_ID_TO_PHONE)) {
@@ -137,6 +184,12 @@ public class MainViewController implements Initializable, ScrapeControllerListen
                             scrapeController = new PhoneNumberToReassignUrl();
                         } else if (scrapeSelected.equals(Constants.EMAIL_CLIENT_BY_ENTITY_ID)) {
                             scrapeController = new EmailClientByEntityIdScrapController();
+                        } else if (scrapeSelected.equals(Constants.CUSTOM_URL_PARAM)) {
+                            scrapeController = new UrlWithParamScrapeController();
+                            //If custom, then we need to set its scrapeInfoAndInput with input from textfields
+                            setCustomScrapeInfoValues(scrapeInfo);
+                        } else if (scrapeSelected.equals(Constants.CUSTOM_SEARCHBAR_PARAM)){
+                            scrapeController = new SearchBarParamScrapeController();
                         } else {
                             scrapeController = new AttorneyGeneralScrapeController();
                         }
@@ -186,8 +239,8 @@ public class MainViewController implements Initializable, ScrapeControllerListen
         return text == null || text.equals("");
     }
 
-    public List<UrlParam> getUrlParamListFromCSV(String filePath, String paramName, String regex) {
-        List<UrlParam> urlParamList = null;
+    public List<CSVInputParam> getUrlParamListFromCSV(String filePath, String paramName, String regex) {
+        List<CSVInputParam> urlParamList = null;
         CSVReader reader;
         try {
             reader = new CSVReader(new FileReader(filePath));
@@ -195,14 +248,14 @@ public class MainViewController implements Initializable, ScrapeControllerListen
             String [] nextLine;
             nextLine = reader.readNext();
             if(nextLine != null) {
-                urlParamList = new ArrayList<UrlParam>();
+                urlParamList = new ArrayList<CSVInputParam>();
                 //String paramName = nextLine[0];
                 int curLineNumber = 0;
                 while ((nextLine = reader.readNext()) != null) {
                     String nextParam = nextLine[0];
                     System.out.println(nextParam);
                     if(regex == null || Pattern.matches(regex, nextParam)) {
-                        urlParamList.add(new UrlParam(paramName, nextLine[0]));
+                        urlParamList.add(new CSVInputParam(paramName, nextLine[0]));
                     } else {
                         //param doesn't match regex
                         String title = "Select CSV";
@@ -225,6 +278,15 @@ public class MainViewController implements Initializable, ScrapeControllerListen
             createBasicAlert(title, alertMessage, Alert.AlertType.NONE);
         }
         return urlParamList;
+    }
+
+    public void setCustomScrapeInfoValues(ScrapeInfoAndInput scrapeInfoValues) {
+        scrapeInfoValues.setLoginUrl(customLoginUrlTextField.getText().trim());
+        scrapeInfoValues.setWebElementSelector(customElemSelTextField.getText().trim());
+        scrapeInfoValues.setTargetUrlPrefix(customPrefixUrlTextField.getText().trim());
+        scrapeInfoValues.setTargetUrlSuffix(customSuffixUrlTextField.getText().trim());
+        scrapeInfoValues.setSearchBarSelector(customSearchbarSelTextField.getText().trim());
+        scrapeInfoValues.setSearchButtonSelector(customSearchButtonSelTextField.getText().trim());
     }
 
     public boolean checkScrapeOkForSelection(String scrapeSelected) {

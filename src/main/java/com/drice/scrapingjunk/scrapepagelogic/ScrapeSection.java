@@ -1,6 +1,6 @@
 package com.drice.scrapingjunk.scrapepagelogic;
 
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import com.drice.scrapingjunk.scrapercontroller.BaseScrapeController;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +21,7 @@ public abstract class ScrapeSection {
         this.webDriver = scrapeController.getWebDriver();
     }
 
-    public abstract void processScrapeSection(List<UrlParam> csvParam, List<Object> result);
+    public abstract void processScrapeSection(List<CSVInputParam> csvParam, List<Object> result);
 
     protected WebElement getWebElement(String selector) {
         WebElement resultElem = null;

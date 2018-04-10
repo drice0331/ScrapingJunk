@@ -9,4 +9,7 @@ public class Constants {
     public static String ENTITY_ID_TO_PHONE_NUMBER_PLUS_REASSIGN_BUTTON = "EntityID to Phone Number Plus Reassign Button";
     public static String PHONE_NUMBER_TO_REASSIGN_BUTTON = "Phone Number To Reassign Button";
     public static String EMAIL_CLIENT_BY_ENTITY_ID = "Email Client By EntityID";
+    public static String CUSTOM_URL_PARAM = "Custom Url Param";
+    public static String CUSTOM_SEARCHBAR_PARAM = "Custom Searchbar Param";
+    public static String CUSTOM = "Custom";
 }

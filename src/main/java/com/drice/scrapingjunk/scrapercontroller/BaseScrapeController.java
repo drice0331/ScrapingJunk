@@ -3,7 +3,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 import com.drice.scrapingjunk.listener.ScrapeControllerListener;
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +38,7 @@ public abstract class BaseScrapeController {
     protected void init() {
     }
 
-    public abstract void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public abstract void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams,
                                      List<Object> result, boolean headlessBrowser);
 
     protected boolean setBrowser(boolean headlessBrowser) {

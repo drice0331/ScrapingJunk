@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
@@ -17,7 +17,7 @@ public class EmailClientByEntityIdScrapController extends BaseScrapeController {
     protected String emailButtonSelectorTemplate = "input[onclick=submitForm(this.form, 'TEMPLATENUMBER')]";
     protected String templateNumberPlaceholder = "TEMPLATENUMBER";
 
-    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
         setBrowser(headlessBrowser);
 
@@ -27,13 +27,16 @@ public class EmailClientByEntityIdScrapController extends BaseScrapeController {
         if (this.login(loginCredentials, loginUrl)) {
             try {
                 int count = 0;
-                for (UrlParam urlParam : urlParams) {
+                for (CSVInputParam urlParam : urlParams) {
                     //Navigate to send email page
                     String sendEmailUrlForEntityId = sendEmailUrl + urlParam.getValue();
                     this.webDriver.navigate().to(sendEmailUrlForEntityId);
+                    /*
                     String emailSendButtonSelector = emailButtonSelectorTemplate;
                     emailSendButtonSelector = emailSendButtonSelector.replace(templateNumberPlaceholder,
                             scrapeInfo.getEmailTemplateNumber());
+                            */
+                    String emailSendButtonSelector = scrapeInfo.getWebElementSelector();
                     WebElement sendButtonElement = getWebElement(emailSendButtonSelector);
                     if(sendButtonElement == null) {
                         throw new NoSuchElementException("");

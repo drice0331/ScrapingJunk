@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -13,12 +13,12 @@ import java.util.List;
  */
 public class AttorneyGeneralScrapeController extends BaseScrapeController {
 
-    private final String hicSearchNameSelector = "txtHICNumber";
+    private final String hicSearchSelector = "#txtHICNumber_I";
     private final String searchButtonSelector = "#btnSearch_BImg";
     private final String resultTableSelector = "#gvBusiness_tcrow0 table";
     private final String phoneColText = "Phone";
 
-    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams, List<Object> result, boolean headlessBrowser) {
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams, List<Object> result, boolean headlessBrowser) {
         setBrowser(headlessBrowser);
 
         setTotalClientsToListener(urlParams.size());
@@ -28,10 +28,10 @@ public class AttorneyGeneralScrapeController extends BaseScrapeController {
         webDriver.navigate().to(targetUrlFull);
         try {
             int count = 0;
-            for (UrlParam urlParam : urlParams) {
+            for (CSVInputParam searchBarParam : urlParams) {
                 webDriver.navigate().to(targetUrlFull);
-                WebElement searchElement = this.webDriver.findElement(By.name(hicSearchNameSelector));
-                sendKeysWDelay(searchElement, urlParam.getValue(), 2000);
+                WebElement searchElement = this.webDriver.findElement(By.cssSelector(hicSearchSelector));
+                sendKeysWDelay(searchElement, searchBarParam.getValue(), 2000);
 
                 WebElement searchButtonElem = getWebElement(searchButtonSelector);
                 searchButtonElem.click();
@@ -43,7 +43,7 @@ public class AttorneyGeneralScrapeController extends BaseScrapeController {
                         String resultText = targetElem.getText();
                         result.add(targetElem.getText());
                     } else {
-                        sendMessageToListener("Can't find phone number for id " + urlParam.getValue());
+                        sendMessageToListener("Can't find phone number for id " + searchBarParam.getValue());
                     }
                 }
                 count++;

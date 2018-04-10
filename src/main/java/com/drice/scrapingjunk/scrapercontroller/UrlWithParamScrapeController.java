@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class UrlWithParamScrapeController extends BaseScrapeController {
 
-    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
         setBrowser(headlessBrowser);
         setTotalClientsToListener(urlParams.size());
@@ -23,10 +23,10 @@ public class UrlWithParamScrapeController extends BaseScrapeController {
         String targetUrlPrefix = scrapeInfo.getTargetUrlPrefix();
         String targetUrlSuffix = scrapeInfo.getTargetUrlSuffix();
         String targetUrlFull = "";
-        if (this.login(loginCredentials, loginUrl)) {
+        if (loginUrl.equals("") || this.login(loginCredentials, loginUrl)) {
             try {
                 int count = 0;
-                for (UrlParam urlParam : urlParams) {
+                for (CSVInputParam urlParam : urlParams) {
                     targetUrlFull = targetUrlPrefix + urlParam.getValue() + targetUrlSuffix;
                     webDriver.navigate().to(targetUrlFull);
                     List<WebElement> targetElements = webDriver.findElements(By.cssSelector(elementSelector));

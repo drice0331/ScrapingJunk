@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.openqa.selenium.*;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
     public String reassignBaseUrl = "https://csrtools.servicemagic.com/crm/hunter/duplicate.crm?pageMode=HS&keepSameSalesRep=true&hunter=true&metered=false&busPhone=";
     private String regexNumber = "[0-9]*";
 
-    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
 
         setBrowser(headlessBrowser);
@@ -32,7 +32,7 @@ public class PhoneNumberToReassignUrl extends BaseScrapeController {
             int count = 0;
 
             //Go through result list
-            for (UrlParam contactInfo : urlParams) {
+            for (CSVInputParam contactInfo : urlParams) {
                 String modifiedContactInfo = contactInfo.getValue();
                 modifiedContactInfo = modifiedContactInfo.replace("(", "");
                 modifiedContactInfo = modifiedContactInfo.replace(")", "");

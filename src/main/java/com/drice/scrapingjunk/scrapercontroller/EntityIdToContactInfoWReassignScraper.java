@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.scrapercontroller;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebElement;
 
@@ -21,7 +21,7 @@ public class EntityIdToContactInfoWReassignScraper extends EntityIdToContactInfo
 
 
 
-    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<UrlParam> urlParams,
+    public void startScrape(ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials, List<CSVInputParam> urlParams,
                             List<Object> result, boolean headlessBrowser) {
         super.startScrape(scrapeInfo, loginCredentials, urlParams, result, headlessBrowser);
 

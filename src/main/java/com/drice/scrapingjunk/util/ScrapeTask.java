@@ -2,7 +2,7 @@ package com.drice.scrapingjunk.util;
 
 import com.drice.scrapingjunk.model.LoginCredentials;
 import com.drice.scrapingjunk.model.ScrapeInfoAndInput;
-import com.drice.scrapingjunk.model.UrlParam;
+import com.drice.scrapingjunk.model.CSVInputParam;
 import com.drice.scrapingjunk.scrapercontroller.BaseScrapeController;
 import javafx.concurrent.Task;
 
@@ -19,14 +19,14 @@ public class ScrapeTask extends Task<List<Object>> {
     BaseScrapeController scrapeController;
     ScrapeInfoAndInput scrapeInfo;
     LoginCredentials loginCredentials;
-    List<UrlParam> urlParamList;
+    List<CSVInputParam> urlParamList;
     boolean headlessBrowser;
 
     Object LOCK = new Object();
     volatile boolean paused = false;
 
     public ScrapeTask(BaseScrapeController scrapeController, ScrapeInfoAndInput scrapeInfo, LoginCredentials loginCredentials,
-                      List<UrlParam> urlParamList, boolean headlessBrowser) {
+                      List<CSVInputParam> urlParamList, boolean headlessBrowser) {
         this.scrapeController = scrapeController;
         this.scrapeInfo = scrapeInfo;
         this.loginCredentials = loginCredentials;
